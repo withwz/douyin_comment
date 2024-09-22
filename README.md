@@ -3,7 +3,7 @@
 ## 如何使用
 
 ```shell
-git clone 
+git clone https://github.com/withwz/douyin_comment.git
 
 pip install -r requirements.txt -i https://mirrors.bfsu.edu.cn/pypi/web/simple/
 
@@ -15,6 +15,13 @@ python get_cookie.py
 
 python main.py
 ```
+
+第一步先python get_cookie.py去获取cookie
+
+第二部运行main.py打开无头浏览器后，点到一个视频modal中，再点开评论，这一块没做自动化。<br />
+会随机一段时间后点↓箭头&&自动评论。
+<img width="1282" alt="image" src="https://github.com/user-attachments/assets/85c4ae33-d7b4-44b4-b048-f9690807eb18">
+
 
 
 

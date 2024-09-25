@@ -18,15 +18,10 @@ python main.py
 
 第一步先python get_cookie.py去获取cookie
 
-第二部运行main.py打开无头浏览器后，点到一个视频modal中，再点开评论，这一块没做自动化。<br />
-会随机一段时间后点↓箭头&&自动评论。
-<img width="1282" alt="image" src="https://github.com/user-attachments/assets/85c4ae33-d7b4-44b4-b048-f9690807eb18">
 
-
-
-运行main.py会打开utils/config下goto_page配置的url，自动点击下边推荐的视频，进入自动评论，自动下一个。
-url配置可以在抖音中搜索复制url。
-<img width="948" alt="image" src="https://github.com/user-attachments/assets/00772528-bf7b-44d4-a389-1a98e7a3e8ab">
+第二步运行main.py会打开utils/config下goto_page配置的url，自动点击下边推荐的视频，进入自动评论，自动下一个。<br />
+url配置可以在抖音中搜索复制url。<br />
+<img width="648" alt="image" src="https://github.com/user-attachments/assets/00772528-bf7b-44d4-a389-1a98e7a3e8ab">
 
 
 

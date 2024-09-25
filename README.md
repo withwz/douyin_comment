@@ -24,6 +24,11 @@ python main.py
 
 
 
+运行main.py会打开utils/config下goto_page配置的url，自动点击下边推荐的视频，进入自动评论，自动下一个。
+url配置可以在抖音中搜索复制url。
+<img width="948" alt="image" src="https://github.com/user-attachments/assets/00772528-bf7b-44d4-a389-1a98e7a3e8ab">
+
+
 
 
 --- 

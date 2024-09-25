@@ -17,6 +17,9 @@ python main.py
 ```
 
 
+运行main.py会打开utils/config下goto_page配置的url，自动点击下边推荐的视频，进入自动评论，自动下一个。
+
+
 
 
 --- 

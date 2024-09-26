@@ -116,8 +116,8 @@ class DouyinCommenter:
             logger.warning("评论输入框未找到，点击弹出元素")
 
             # 如果评论输入框未出现，点击弹出框
-            popup_element = page.locator('[data-e2e="feed-comment-icon"]')
-            await popup_element.click()
+            await self.click_second_video_comment_icon(page)
+            return 
 
         # 输入评论
         logger.info("输入评论文本")

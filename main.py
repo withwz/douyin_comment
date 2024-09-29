@@ -77,7 +77,9 @@ class DouyinCommenter:
         """获取当前活跃视频的ID"""
         try:
             # 定位到 data-e2e="feed-active-video" 的元素
-            video_element = page.locator('[data-e2e="feed-active-video"]')
+            video_element = page.locator(
+                '[data-e2e="feed-item"]>[data-e2e="feed-active-video"]'
+            )
             # 获取该元素上的 data-e2e-vid 属性值
             video_id = await video_element.get_attribute("data-e2e-vid")
             logger.info(f"当前视频ID: {video_id}")

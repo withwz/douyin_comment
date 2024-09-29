@@ -117,7 +117,7 @@ class DouyinCommenter:
 
             # 如果评论输入框未出现，点击弹出框
             await self.click_second_video_comment_icon(page)
-            return 
+            return
 
         # 输入评论
         logger.info("输入评论文本")
@@ -198,6 +198,10 @@ class DouyinCommenter:
             logger.error(f"模拟浏览器行为时出现错误: {e}")
 
     async def jump_to_modal(self, page):
+        await asyncio.sleep(3)
+        # 选择多列
+        await page.wait_for_selector('.JLxgOO5G div:has-text("多列")', timeout=35000)
+        await page.locator('.JLxgOO5G div:has-text("多列")').click()
         # 等待 .AMqhOzPC 元素的出现
         await page.wait_for_selector(".NA7vT_tM .AMqhOzPC", timeout=35000)
         logger.info(".AMqhOzPC 元素已找到")
@@ -225,7 +229,9 @@ class DouyinCommenter:
         """
         try:
             # 等待所有 [data-e2e="feed-active-video"] 元素的出现
-            await page.wait_for_selector('[data-e2e="feed-active-video"]', timeout=35000)
+            await page.wait_for_selector(
+                '[data-e2e="feed-active-video"]', timeout=35000
+            )
             logger.info('[data-e2e="feed-active-video"] 元素已找到')
 
             # 获取所有 [data-e2e="feed-active-video"] 元素

@@ -23,6 +23,7 @@ python main.py
 url配置可以在抖音中搜索复制url。<br />
 <img width="648" alt="image" src="https://github.com/user-attachments/assets/00772528-bf7b-44d4-a389-1a98e7a3e8ab">
 
+配置comment_tasks数组可以轮询执行里边的任务
 
 
 

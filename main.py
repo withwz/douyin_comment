@@ -4,19 +4,22 @@ import random
 import json
 import traceback
 from utils.logger import logger
-from utils.config import get_random_caption, goto_page
+from utils.config import get_random_caption, comment_tasks
 from playwright.async_api import Playwright, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 
 class DouyinCommenter:
-    def __init__(self, cookie_file: str):
+    def __init__(self, cookie_file: str, comment_task):
         self.cookie_file = cookie_file
         self.ua = {
             "web": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/123.0.0.0 Safari/537.36",
         }
         self.current_active_video = {"url": "", "comment": ""}
         self.no_more = False
+        self.comment_task = comment_task
+        self.browser = None
+        self.context = None
 
     async def init_browser(self, p: Playwright, headless=False):
         """初始化Playwright浏览器"""
@@ -124,7 +127,7 @@ class DouyinCommenter:
         # 输入评论
         logger.info("输入评论文本")
         await page.wait_for_timeout(500)
-        random_caption = get_random_caption()
+        random_caption = get_random_caption(self.comment_task["comments_list"])
         self.current_active_video["comment"] = random_caption
         await comment_input.type(random_caption)
 
@@ -174,7 +177,7 @@ class DouyinCommenter:
 
                 # 没有更多了跳转到起始页面，重新点击进入
                 if self.no_more:
-                    await page.goto(goto_page)
+                    await page.goto(self.comment_task["goto_page"])
                     await self.jump_to_modal(page)
 
                 # 浏览视频
@@ -265,17 +268,17 @@ class DouyinCommenter:
 
     async def start_browsing(self, p: Playwright) -> None:
         """启动浏览评论的主要流程"""
-        browser = await self.init_browser(p)
-        context = await browser.new_context(
+        self.browser = await self.init_browser(p)
+        self.context = await self.browser.new_context(
             viewport={"width": 1280, "height": 720},  # 屏幕大小
             storage_state=self.cookie_file,
             user_agent=self.ua["web"],
         )
-        page = await context.new_page()
+        page = await self.context.new_page()
 
         try:
             await page.add_init_script(path="stealth.min.js")
-            await page.goto(goto_page)
+            await page.goto(self.comment_task["goto_page"])
             is_logged_in = await self.check_login_status(page)
 
             if is_logged_in:
@@ -287,13 +290,17 @@ class DouyinCommenter:
         except Exception as e:
             logger.error(f"浏览过程中发生错误: {e}")
         finally:
-            await context.close()
-            await browser.close()
+            await self.context.close()
+            await self.browser.close()
 
     async def main(self):
         """主入口函数"""
         async with async_playwright() as playwright:
             await self.start_browsing(playwright)
+
+    async def destroy(self):
+        await self.context.close()
+        await self.browser.close()
 
 
 def find_files(directory, extension):
@@ -313,12 +320,23 @@ def find_files(directory, extension):
 async def run():
     """程序运行入口"""
     cookie_files = find_files("cookie", ".json")
-
-    if cookie_files:
-        commenter = DouyinCommenter(cookie_files[0])
-        await commenter.main()
-    else:
+    if not cookie_files:
         logger.error("未找到任何cookie文件")
+        return
+
+    for task in comment_tasks:
+        commenter = DouyinCommenter(cookie_files[0], task)
+        try:
+            # 设置超时为三分钟
+            await asyncio.wait_for(commenter.main(), timeout=180)
+        except asyncio.TimeoutError:
+            logger.info("评论者主函数执行超时，停止执行。")
+        finally:
+            # 停止并清理
+            await commenter.destroy()
+
+        # 暂停一段时间后再执行下一个任务
+        await asyncio.sleep(10)
 
 
 if __name__ == "__main__":

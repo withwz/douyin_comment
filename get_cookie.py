@@ -99,9 +99,15 @@ class creator_douyin:
 
 
 def main():
-    phone = "14751799042"
-    app = creator_douyin(phone, 60)
-    asyncio.run(app.main())
+    while True:
+        phone = input('请输入手机号码\n输入"exit"将退出服务\n')
+        if phone == "exit":
+            break
+        elif phone.isnumeric() and len(phone) == 11:
+            app = creator_douyin(phone, 60)
+            asyncio.run(app.main())
+        else:
+            print('请输入正确的手机号码\n')
 
 
 main()
